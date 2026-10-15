@@ -17,6 +17,13 @@ repositories {
 	mavenCentral()
 }
 
+// Patched versions ahead of the Spring Boot 4.1.1 BOM, found by lockscan
+// (github.com/Revind4k/lockscan): Tomcat 11.0.24 has three critical auth bypasses
+// (GHSA-9xv2-5v5q-p794, GHSA-gcx9-497g-6cp6, GHSA-h3x4-894j-xpx5) and Jackson 3.1.5
+// has seven high/medium parser DoS issues. Drop these once Boot ships the fixes.
+extra["tomcat.version"] = "11.0.27"
+extra["jackson-bom.version"] = "3.1.7"
+
 dependencies {
 	implementation("org.springframework.boot:spring-boot-starter-actuator")
 	implementation("org.springframework.boot:spring-boot-starter-cache")
@@ -42,4 +49,9 @@ dependencies {
 
 tasks.withType<Test> {
 	useJUnitPlatform()
+}
+
+// Lock every configuration so builds are reproducible and gradle.lockfile can be scanned.
+dependencyLocking {
+	lockAllConfigurations()
 }
