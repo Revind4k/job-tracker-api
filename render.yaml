@@ -1,0 +1,23 @@
+# Render blueprint: New > Blueprint > pick this repo. Postgres comes from Neon (free); paste
+# its JDBC URL, user and password when Render asks for the values marked sync: false.
+services:
+  - type: web
+    name: job-tracker-api
+    runtime: docker
+    plan: free
+    healthCheckPath: /actuator/health
+    envVars:
+      - key: DB_URL          # jdbc:postgresql://<neon-host>/<db>?sslmode=require
+        sync: false
+      - key: DB_USER
+        sync: false
+      - key: DB_PASSWORD
+        sync: false
+      - key: JWT_SECRET
+        generateValue: true  # random 256-bit secret, never in the repo
+      - key: CORS_ORIGINS
+        value: https://revind4k.github.io
+      - key: REDIS_ENABLED   # no Redis on the free deploy: rate limiter off, health ignores Redis
+        value: "false"
+      - key: CACHE_TYPE      # stats cache in memory instead of Redis (single instance)
+        value: simple

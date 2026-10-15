@@ -34,15 +34,19 @@ public class RateLimitFilter extends OncePerRequestFilter {
 
     private final StringRedisTemplate redis;
     private final int limit;
+    private final boolean enabled;
 
-    public RateLimitFilter(StringRedisTemplate redis, @Value("${app.rate-limit.requests-per-minute}") int limit) {
+    public RateLimitFilter(StringRedisTemplate redis, @Value("${app.rate-limit.requests-per-minute}") int limit,
+                           @Value("${app.rate-limit.enabled:true}") boolean enabled) {
         this.redis = redis;
         this.limit = limit;
+        this.enabled = enabled;
     }
 
     @Override
     protected boolean shouldNotFilter(HttpServletRequest request) {
-        return request.getRequestURI().startsWith("/actuator");
+        // Disabled when the deployment has no Redis at all, rather than failing open per request.
+        return !enabled || request.getRequestURI().startsWith("/actuator");
     }
 
     @Override
