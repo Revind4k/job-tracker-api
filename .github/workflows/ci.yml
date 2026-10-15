@@ -40,3 +40,15 @@ jobs:
       - run: terraform fmt -check -recursive
       - run: terraform init -backend=false
       - run: terraform validate
+  dependencies:
+    # Fails the build on a high or critical advisory in gradle.lockfile; results go to code scanning.
+    runs-on: ubuntu-latest
+    permissions:
+      contents: read
+      security-events: write
+    steps:
+      - uses: actions/checkout@v5
+      - uses: Revind4k/lockscan@main
+        with:
+          path: gradle.lockfile
+          fail-on: high
