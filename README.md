@@ -2,6 +2,8 @@
 
 A REST API for tracking job applications: Java 21 and Spring Boot 4, Postgres, Redis caching, JWT auth, and a Redis rate limiter. It ships with integration tests, a load test, a Dockerfile, CI, and Terraform for AWS.
 
+**Live:** the React front end at https://revind4k.github.io/job-tracker-web/ runs against this API, deployed on Render's free tier with Postgres on Neon (`render.yaml`). The free instance sleeps when idle, so the first request can take 30-60 seconds. Health check: https://job-tracker-api-xfrf.onrender.com/actuator/health
+
 ## Results
 
 Load test (k6, 20 virtual users for 30 s) of `GET /applications/stats` for a user with **50,000 applications**. Measured locally on an Apple M4 with Postgres 17 and Redis 8:
